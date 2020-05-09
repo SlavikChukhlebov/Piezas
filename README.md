@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/SlavikChukhlebov/Piezas.svg?branch=master)](https://travis-ci.com/SlavikChukhlebov/Piezas)
+[![Coverage Status](https://coveralls.io/repos/github/SlavikChukhlebov/Piezas/badge.svg)](https://coveralls.io/github/SlavikChukhlebov/Piezas)
+
 # Piezas- Slavik Chukhlebov
 
 ## Associated Enumerated Types
