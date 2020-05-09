@@ -165,7 +165,7 @@ TEST(PiezasTest, gameStateTie)
 	ASSERT_TRUE(testObj.gameState() == Blank);
 }
 
-TEST(PiezasTest, gameWin)
+TEST(PiezasTest, gameWinX)
 {	
 	Piezas testObj;
 	bool x = true;
@@ -186,7 +186,7 @@ TEST(PiezasTest, gameWin)
 						if(testObj.dropPiece(col) == X)
 						{
 							moves++;
-							std::cout << "#" << moves << " [" << col << "] X" << std::endl;
+							//std::cout << "#" << moves << " [" << col << "] X" << std::endl;
 							col = BOARD_COLS;
 							row = BOARD_ROWS;
 							x = !x;
@@ -202,7 +202,7 @@ TEST(PiezasTest, gameWin)
 						if(testObj.dropPiece(col) == X)
 						{
 							moves++;
-							std::cout << "#" << moves << " [" << col << "] X" << std::endl;
+							//std::cout << "#" << moves << " [" << col << "] X" << std::endl;
 							col = BOARD_COLS;
 							row = BOARD_ROWS;
 							x = !x;
@@ -222,7 +222,7 @@ TEST(PiezasTest, gameWin)
 					if(testObj.dropPiece(col) == O)
 					{
 						moves++;
-						std::cout << "#" << moves << " [" << col << "] O" << std::endl;
+						//std::cout << "#" << moves << " [" << col << "] O" << std::endl;
 						col = BOARD_COLS;
 						row = BOARD_ROWS;
 						x = !x;
@@ -233,12 +233,76 @@ TEST(PiezasTest, gameWin)
 		}
 	}
 	
-	if(BOARD_COLS > BOARD_ROWS)
+	ASSERT_TRUE(testObj.gameState() == X);
+}
+
+TEST(PiezasTest, gameWinO)
+{	
+	Piezas testObj;
+	bool x = true;
+	int maxMoves = BOARD_COLS * BOARD_ROWS;
+	int moves = 0;
+	int flip = 1;
+	
+	while(moves < maxMoves)
 	{
-		ASSERT_TRUE(testObj.gameState() == X);
+		if(!x)
+		{
+			for(size_t row = 0; row < BOARD_ROWS; row++)
+			{
+				if(flip > 0)
+				{
+					for(size_t col = 0; col < BOARD_COLS; col++)
+					{
+						if(testObj.dropPiece(col) == O)
+						{
+							moves++;
+							//std::cout << "#" << moves << " [" << col << "] O" << std::endl;
+							col = BOARD_COLS;
+							row = BOARD_ROWS;
+							x = !x;
+							flip *= -1;
+							break;
+						}
+					}
+				}
+				else
+				{
+					for(int col = BOARD_COLS - 1; col >= 0; col--)
+					{
+						if(testObj.dropPiece(col) == O)
+						{
+							moves++;
+							//std::cout << "#" << moves << " [" << col << "] O" << std::endl;
+							col = BOARD_COLS;
+							row = BOARD_ROWS;
+							x = !x;
+							flip *= -1;
+							break;
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			for(size_t col = 0; col < BOARD_COLS; col++)
+			{
+				for(size_t row = 0; row < BOARD_ROWS; row++)
+				{
+					if(testObj.dropPiece(col) == X)
+					{
+						moves++;
+						//std::cout << "#" << moves << " [" << col << "] X" << std::endl;
+						col = BOARD_COLS;
+						row = BOARD_ROWS;
+						x = !x;
+						break;
+					}
+				}
+			}
+		}
 	}
-	else if(BOARD_ROWS < BOARD_COLS)
-	{
-		ASSERT_TRUE(testObj.gameState() == O);
-	}
+	
+	ASSERT_TRUE(testObj.gameState() == O);
 }
