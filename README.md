@@ -1,4 +1,4 @@
-# Piezas
+# Piezas- Slavik Chukhlebov
 
 ## Associated Enumerated Types
 `Piece` has four possible values: `X`,`O`,`Invalid`, and `Blank`
