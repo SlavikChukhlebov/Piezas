@@ -1,5 +1,6 @@
 #include "Piezas.h"
 #include <vector>
+#include <iostream>
 /** CLASS Piezas
  * Class for representing a Piezas vertical board, which is roughly based
  * on the game "Connect Four" where pieces are placed in a column and 
@@ -22,6 +23,19 @@
 **/
 Piezas::Piezas()
 {
+	//std::cout << "Constructing" << std::endl;
+	Piece emptySpace = Blank;
+	for(size_t row = 0; row < BOARD_ROWS; row++)
+	{
+		board.push_back( std::vector<Piece>() );
+		for(size_t col = 0; col < BOARD_COLS; col++)
+		{
+			board[row].push_back(emptySpace);
+			//std::cout << (char)board[row][col];
+		}
+		//std::cout << std::endl;
+	}
+	turn = X;
 }
 
 /**
@@ -30,6 +44,16 @@ Piezas::Piezas()
 **/
 void Piezas::reset()
 {
+	//std::cout << "Reseting" << std::endl;
+	for(size_t row = 0; row < BOARD_ROWS; row++)
+	{
+		for(size_t col = 0; col < BOARD_COLS; col++)
+		{
+			board[row][col] = Blank;
+			//std::cout << (char)board[row][col] << " ";
+		}
+		//std::cout << std::endl;
+	}
 }
 
 /**
@@ -41,7 +65,41 @@ void Piezas::reset()
  * Trying to drop a piece where it cannot be placed loses the player's turn
 **/ 
 Piece Piezas::dropPiece(int column)
-{
+{	
+	//std::cout << "Column " << column << std::endl;
+	if(column >= BOARD_COLS || column < 0)
+	{
+		//std::cout << "Column " << column << " is out of range." << std::endl;
+		return Invalid;
+	}
+	else if(board[BOARD_ROWS - 1][column] != Blank)
+	{
+		//std::cout << "Column " << column << " is full." << std::endl;
+		return Blank;
+	}
+	
+	for(size_t row = 0; row < BOARD_ROWS; row++)
+	{
+		//std::cout << (char)board[row][column] << std::endl;
+		if(board[row][column] == Blank)
+		{
+			//std::cout << "New value added" << std::endl;
+			board[row][column] = turn;
+			if(turn == X)
+			{
+				turn = O;
+			}
+			else
+			{
+				turn = X;
+			}
+			//std::cout << "[" << row << "][" << column << "] " << (char)board[row][column] << std::endl;
+			//std::cout << "Piezas: " << (char)board[row][column] << std::endl;
+			return board[row][column];
+		}
+	}
+	
+	//std::cout << "Piezas: B" << std::endl;
     return Blank;
 }
 
@@ -51,7 +109,14 @@ Piece Piezas::dropPiece(int column)
 **/
 Piece Piezas::pieceAt(int row, int column)
 {
-    return Blank;
+	if(row < 0 || row >= BOARD_ROWS
+	|| column < 0 || column >= BOARD_COLS)
+	{
+		return Invalid;
+	}
+	
+	//std::cout << "R: " << (char)board[row][column] << std::endl;
+    return board[row][column];
 }
 
 /**
@@ -65,5 +130,121 @@ Piece Piezas::pieceAt(int row, int column)
 **/
 Piece Piezas::gameState()
 {
+	//Check if game is over
+	for(size_t row = 0; row < BOARD_ROWS; row++)
+	{
+		for(size_t col = 0; col < BOARD_COLS; col++)
+		{
+			if(board[row][col] != X && board[row][col] != O)
+			{
+				//std::cout << "Invalid score, game is not over!" << std::endl;
+				return Invalid;
+			}
+		}
+	}
+	
+	int xHighScore = 0;
+	int oHighScore = 0;
+	int xScore = 0;
+	int oScore = 0;
+	Piece p = Blank;
+	
+	//For rows
+	for(size_t row = 0; row < BOARD_ROWS; row++)
+	{
+		xScore = 0;
+		oScore = 0;
+		p = X;
+		for(size_t col = 0; col < BOARD_COLS; col++)
+		{
+			//std::cout << "[" << row << "][" << col << "]" << std::endl;
+			//std::cout << (char)p << "->" << (char)board[row][col] << std::endl;
+			if(p == board[row][col] && p == X)
+			{
+				xScore++;
+			}
+			else if(p == board[row][col] && p == O)
+			{
+				oScore++;
+			}
+			else if(p != board[row][col] && p == X)
+			{
+				p = O;
+				xScore = 0;
+				oScore++;
+			}
+			else if(p != board[row][col] && p == O)
+			{
+				p = X;
+				oScore = 0;
+				xScore++;
+			}
+			
+			if(xScore > xHighScore)
+			{
+				xHighScore = xScore;
+			}
+			if(oScore > oHighScore)
+			{
+				oHighScore = oScore;
+			}
+		}
+		//std::cout << "xHighScore: " << xHighScore << std::endl;
+		//std::cout << "oHighScore: " << oHighScore << std::endl;
+	}
+	
+	//For cols
+	for(size_t col = 0; col < BOARD_COLS; col++)
+	{
+		xScore = 0;
+		oScore = 0;
+		p = X;
+		for(size_t row = 0; row < BOARD_ROWS; row++)
+		{
+			//std::cout << "[" << row << "][" << col << "]" << std::endl;
+			//std::cout << (char)p << "->" << (char)board[row][col] << std::endl;
+			if(p == board[row][col] && p == X)
+			{
+				xScore++;
+			}
+			else if(p == board[row][col] && p == O)
+			{
+				oScore++;
+			}
+			else if(p != board[row][col] && p == X)
+			{
+				p = O;
+				xScore = 0;
+				oScore++;
+			}
+			else if(p != board[row][col] && p == O)
+			{
+				p = X;
+				oScore = 0;
+				xScore++;
+			}
+			
+			if(xScore > xHighScore)
+			{
+				xHighScore = xScore;
+			}
+			if(oScore > oHighScore)
+			{
+				oHighScore = oScore;
+			}
+		}
+		//std::cout << "xHighScore: " << xHighScore << std::endl;
+		//std::cout << "oHighScore: " << oHighScore << std::endl;
+	}
+	
+	if(xHighScore > oHighScore)
+	{
+		return X;
+	}
+	else if(xHighScore < oHighScore)
+	{
+		return O;
+	}
+	
     return Blank;
 }
